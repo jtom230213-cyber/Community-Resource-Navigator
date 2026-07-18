@@ -1,0 +1,270 @@
+30-DAY GITHUB BUILD ROADMAP
+===========================
+
+Theme: Community Resource Navigator
+
+Problem to solve
+----------------
+People looking for local support (food, housing, health, legal aid, jobs, or
+education) usually find scattered, outdated information. Build a resource
+directory that lets people find verified services, while organizers can manage
+listings and use AI to make the directory easier to maintain and search.
+
+By Day 30, the project should have:
+- A public resource-search website.
+- An organizer dashboard to manage listings.
+- Multiple API implementations and data-access approaches documented in Git.
+- AI-assisted extraction, semantic search, and an MCP server.
+- An agent workflow that reviews and enriches submitted resources.
+
+Working rule
+------------
+Each day has one small, complete deliverable. Push a commit with a README update
+or a daily progress note. Do not rebuild old work unless the day specifically
+says to compare, migrate, or replace a technology.
+
+Suggested repository layout
+---------------------------
+community-resource-navigator/
+  apps/
+    web-react/
+    web-nextjs/
+    web-vue/
+    api-express/
+    api-fastapi/
+    api-nestjs/
+  packages/
+    shared-types/
+    ui/
+  services/
+    mcp-resource-server/
+    ingestion-worker/
+  docs/
+    daily-notes/
+    architecture/
+
+Start with one monorepo after Day 8, or create one small repository per day and
+link them from a portfolio index repository. A monorepo better shows how the
+pieces connect; daily repositories make the commit streak more visible.
+
+WEEK 1 - DISCOVERY, UI, AND FIRST API
+=====================================
+
+Day 1 - Problem definition and static directory
+Tech: HTML, modern CSS, JavaScript
+Build: A responsive static page with 12 fictional resource listings, category
+filters, a location field, and a resource-detail view.
+Push: README with target users, problem statement, screenshots, and a data model
+for Resource: id, name, category, address, phone, website, eligibility, hours.
+
+Day 2 - React search experience
+Tech: React, Vite, TypeScript, React Router
+Build: Recreate Day 1 as a React app with URL-driven filters such as
+?category=food&city=Boston. Store seed data in a typed JSON file.
+Push: Add loading, empty, and error-style states even though data is local.
+
+Day 3 - Component system and accessibility pass
+Tech: React, TypeScript, CSS Modules or Tailwind CSS, Storybook (optional)
+Build: Extract reusable SearchBar, FilterPanel, ResourceCard, and ResourceDetail
+components. Improve keyboard navigation, labels, focus states, and contrast.
+Push: A component inventory in the README and one accessibility checklist.
+
+Day 4 - Express REST API
+Tech: Node.js, Express, TypeScript, Zod
+Build: Create GET /resources, GET /resources/:id, and GET /categories. Validate
+query parameters for category, city, and keyword. Keep data in a JSON file.
+Push: OpenAPI-style endpoint examples using curl or a Postman collection.
+
+Day 5 - Connect React to Express
+Tech: React Query or TanStack Query, Express, CORS
+Build: Replace the Day 2 local JSON reads with API calls. Add a clear loading
+indicator, retry action, and no-results state.
+Push: A short architecture diagram and instructions to run both applications.
+
+Day 6 - Persistent data with PostgreSQL
+Tech: PostgreSQL, Prisma ORM, Express
+Build: Define Resource and Category tables, create a seed script, and migrate the
+Day 4 endpoints from JSON-file storage to PostgreSQL.
+Push: Schema diagram, migration instructions, and a .env.example file.
+
+Day 7 - Admin resource CRUD
+Tech: React Hook Form, Zod, Express, Prisma
+Build: Add an organizer-only CRUD screen: create, edit, archive, and restore a
+resource. Use a simple hard-coded organizer role for this day.
+Push: Form validation examples and manual test steps in the README.
+
+WEEK 2 - BACKEND COMPARISONS, AUTH, AND REAL-TIME DATA
+=======================================================
+
+Day 8 - Monorepo and shared contracts
+Tech: pnpm workspaces or Turborepo, TypeScript, shared Zod schemas
+Build: Move the React app and Express API into apps/. Put Resource request and
+response schemas in packages/shared-types/ so client and server share contracts.
+Push: Workspace diagram and a root command to run all services.
+
+Day 9 - FastAPI service comparison
+Tech: Python, FastAPI, Pydantic, SQLAlchemy or SQLModel
+Build: Implement a parallel read-only resource API in apps/api-fastapi/ using the
+same PostgreSQL database and endpoint contract.
+Push: Benchmark notes comparing startup, validation, and developer experience
+with Express. Do not remove the Express API.
+
+Day 10 - Next.js public frontend
+Tech: Next.js, TypeScript, Server Components, Route Handlers only if needed
+Build: Create apps/web-nextjs/ for the public directory. Implement server-rendered
+search results and a dynamic resource detail page that calls one chosen API.
+Push: Explain when React/Vite versus Next.js is the better fit for this project.
+
+Day 11 - Authentication and authorization
+Tech: Auth.js or Clerk, PostgreSQL, Express middleware
+Build: Add organizer login, session handling, and roles: visitor, editor, admin.
+Protect the Day 7 dashboard and its modifying API endpoints.
+Push: Threat-model note covering password handling, authorization, and secrets.
+
+Day 12 - NestJS administrative API
+Tech: NestJS, TypeScript, class-validator or Zod, PostgreSQL
+Build: Implement resource write endpoints in apps/api-nestjs/ with modules,
+controllers, services, and a database layer. Keep public reads on Express/FastAPI.
+Push: Compare Express and NestJS folder structure and dependency injection.
+
+Day 13 - Realtime verification queue
+Tech: Socket.IO or Server-Sent Events, React
+Build: When an organizer submits a resource change, show it in an admin review
+queue without page refresh. A second browser window should receive the update.
+Push: A short GIF/screenshot pair and test instructions for two browser sessions.
+
+Day 14 - Background jobs and scheduled checks
+Tech: BullMQ + Redis or Python Celery + Redis
+Build: Add a job that periodically checks whether a resource website responds.
+Store check time and status; surface stale resources in the organizer dashboard.
+Push: Document job retries, failure handling, and local Redis setup.
+
+WEEK 3 - DATA INGESTION, LLM FEATURES, AND RAG
+================================================
+
+Day 15 - CSV ingestion pipeline
+Tech: Python, Pandas, FastAPI or CLI, PostgreSQL
+Build: Build a command that imports a city-provided CSV, maps its columns to the
+Resource schema, reports malformed rows, and writes valid records to a staging
+table rather than publishing them.
+Push: Include a small anonymized sample CSV and import report example.
+
+Day 16 - Resource normalization service
+Tech: Python, Pydantic, geocoding API or mocked adapter
+Build: Normalize phone numbers, URLs, addresses, categories, and hours from the
+staging table. Mark ambiguous data for human review.
+Push: Unit tests for at least five messy input cases.
+
+Day 17 - LLM extraction prototype
+Tech: Python, OpenAI or Anthropic SDK, Pydantic structured output
+Build: Paste unstructured service text and have an LLM extract a candidate
+Resource object with confidence notes. Never publish it automatically.
+Push: Prompt, JSON schema, two successful examples, and one failure case.
+
+Day 18 - LLM-assisted admin form
+Tech: Next.js or React, server API, LLM provider SDK
+Build: Add an "Extract from description" action to the organizer form. Let the
+editor review and edit all generated fields before saving.
+Push: Explain human-in-the-loop design and add rate-limit/error handling.
+
+Day 19 - Semantic resource search
+Tech: pgvector or Chroma, embeddings API, Python FastAPI
+Build: Generate embeddings for resource descriptions and expose a semantic-search
+endpoint. Return resource IDs, similarity score, and a short matched excerpt.
+Push: Compare keyword and semantic results for five representative searches.
+
+Day 20 - Retrieval-augmented answers
+Tech: LLM SDK, pgvector/Chroma, FastAPI
+Build: Answer questions such as "Where can I find food assistance near downtown?"
+using only retrieved resources. Include resource names and URLs as citations.
+Push: Add a rule that the system says it lacks information rather than inventing
+services when retrieval is weak.
+
+Day 21 - Evaluation set for AI search
+Tech: Python, pytest, CSV/JSON fixtures
+Build: Create 15 question-and-expected-resource examples. Run an evaluation that
+measures whether the expected resource appears in the top 3 retrieved results.
+Push: Evaluation script, baseline score, and notes on known weak queries.
+
+WEEK 4 - MCP, AGENTS, QUALITY, AND DEPLOYMENT
+==============================================
+
+Day 22 - MCP Resource Directory server
+Tech: Model Context Protocol SDK (TypeScript or Python)
+Build: Expose tools named search_resources, get_resource, and list_categories.
+Each calls the directory API and returns structured, citation-friendly results.
+Push: MCP configuration example and a transcript of a successful tool call.
+
+Day 23 - MCP organizer tools
+Tech: MCP SDK, OAuth/API-key concept, role checks
+Build: Add submit_resource_for_review and list_stale_resources. Enforce that write
+tools use an organizer identity and submit only to the review queue.
+Push: Security note explaining tool permissions and confirmation boundaries.
+
+Day 24 - Research-and-ingestion agent
+Tech: LLM tool calling, MCP client, Python or TypeScript
+Build: Given a source webpage or pasted text, an agent extracts candidate resource
+data, checks near-duplicates via MCP, and submits a review item with its evidence.
+Push: Trace log for one run, including tools called and the final review record.
+
+Day 25 - Verification agent workflow
+Tech: LangGraph, PydanticAI, or a small explicit state machine
+Build: Create stages: validate fields, check duplicates, assess freshness, and
+recommend approve/reject/escalate. Keep all final publishing decisions human-run.
+Push: State diagram and test cases for approval, duplicate, and insufficient-data.
+
+Day 26 - Vue frontend comparison
+Tech: Vue 3, Vite, TypeScript, Pinia or composables
+Build: Create apps/web-vue/ with only the public search and resource-detail flow.
+It should call the same backend and support the same URL query parameters.
+Push: Compare React and Vue implementation size, state handling, and ergonomics.
+
+Day 27 - Observability and API reliability
+Tech: OpenTelemetry, structured logging, Sentry optional, health checks
+Build: Add request IDs, structured logs, /health endpoints, and error boundaries
+to the primary frontend. Record latency for search and the AI endpoints.
+Push: A troubleshooting section with one simulated failure and its diagnosis.
+
+Day 28 - Tests and security hardening
+Tech: Vitest/Jest, Playwright, pytest, dependency audit
+Build: Add API integration tests, one end-to-end resource-search test, and tests
+that verify unauthenticated users cannot modify resources. Validate environment
+variables and review CORS and rate limits.
+Push: Coverage summary and a short security checklist.
+
+Day 29 - Deployment and CI/CD
+Tech: GitHub Actions, Docker, Vercel/Netlify, Render/Railway/Fly.io
+Build: Deploy one public frontend and one primary API. Add CI to lint, typecheck,
+test, and build on pull requests. Containerize the API and document local setup.
+Push: Live demo URL, architecture diagram, and deployment guide.
+
+Day 30 - Portfolio release and retrospective
+Tech: GitHub Releases, project documentation, optional demo video
+Build: Choose the primary stack (for example Next.js + FastAPI + PostgreSQL +
+pgvector + MCP) and present the complete flow: public search, organizer review,
+AI extraction, RAG answers, and MCP tools.
+Push: Tag v1.0.0. Add a polished README with screenshots, architecture, technology
+choices, setup, demo data, limitations, and next steps. Write a retrospective on
+what each framework was best and worst at for this problem.
+
+DAILY GITHUB CHECKLIST
+======================
+
+[ ] Create a focused branch or work directly on main for the day.
+[ ] Make the smallest complete vertical slice described above.
+[ ] Run the day-relevant test, typecheck, or build command.
+[ ] Update README.md or docs/daily-notes/day-XX.md with what changed.
+[ ] Do not commit .env files, API keys, database dumps, or private data.
+[ ] Commit with: feat(day-XX): <specific capability>.
+[ ] Push to GitHub before ending the day.
+
+SCOPE CONTROL
+=============
+
+- Use fictional seed data until Day 15. Real community-service data has accuracy
+  and privacy responsibilities.
+- Do not require paid APIs. Every LLM/geocoding feature should offer a mock mode
+  or clearly state the API requirement in .env.example.
+- Finish one happy-path workflow daily. Keep polishing for Day 30.
+- On days where a framework is compared, reuse the same API contract and one small
+  page or endpoint. The purpose is credible comparison, not duplicate products.
