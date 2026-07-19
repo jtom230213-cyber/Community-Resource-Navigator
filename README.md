@@ -2,7 +2,7 @@
 
 > A calm, accessible starting point for finding local support.
 
-Harbor Help Directory is the first project in a 30-day Community Resource Navigator build roadmap. It is a responsive, client-side directory that helps people quickly browse fictional local services for food, housing, health, legal aid, jobs, and education.
+Harbor Help Directory is the Day 2 React rebuild in a 30-day Community Resource Navigator roadmap. It is a responsive, client-side directory that helps people quickly browse fictional local services for food, housing, health, legal aid, jobs, and education.
 
 The project focuses on the essential public-facing experience: make support information easier to scan, filter, and act on when someone needs practical next steps.
 
@@ -24,29 +24,55 @@ Support information is often scattered across outdated pages and difficult to sc
 ## Features
 
 - 12 fictional Boston-area resource listings.
-- Live keyword and location search.
+- Live keyword search and URL-driven category and city filters.
 - Category filters for Food, Housing, Health, Legal Aid, Jobs, and Education.
 - Focused resource-detail view with address, phone, website, eligibility, and hours.
+- Loading, empty, and error-style states for the directory surface.
 - Responsive desktop and mobile layouts.
 - Visible keyboard focus states and labelled form controls.
 
 ## Built with
 
-- HTML
+- React
+- TypeScript
+- Vite
+- React Router
 - Modern CSS
-- Vanilla JavaScript
 
 ## Run locally
 
-Open [index.html](index.html) in a browser. No dependencies or server are required.
+```bash
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite. Create a production bundle with:
+
+```bash
+npm run build
+```
+
+## URL filters
+
+Category and city are stored in the URL, so a filtered directory view can be shared or refreshed without losing context.
+
+```text
+/?category=food&city=Boston
+```
+
+The accepted categories are `food`, `housing`, `health`, `legal-aid`, `jobs`, and `education`.
 
 ## Project structure
 
 ```text
 .
-|- index.html                 # Page structure
-|- styles.css                 # Responsive visual design
-|- app.js                     # Seed data and interactive behavior
+|- index.html                 # Vite entry point
+|- src/
+|  |- data/resources.json     # Typed local seed data
+|  |- main.tsx                # React directory experience
+|  |- styles.css              # Responsive visual design
+|  `- types.ts                # Resource contract
+|- package.json               # Vite development commands
 `- assets/screenshots/        # README previews
 ```
 
@@ -63,8 +89,8 @@ Open [index.html](index.html) in a browser. No dependencies or server are requir
 | `eligibility` | Who can use the service |
 | `hours` | Operating hours |
 
-All data in this prototype is fictional. The seed records live in [app.js](app.js).
+All data in this prototype is fictional. The seed records live in [src/data/resources.json](src/data/resources.json).
 
 ## Roadmap context
 
-This Day 1 milestone establishes the public directory experience. Later milestones will rebuild it with React, add APIs and persistent data, introduce organizer workflows, and explore AI-assisted resource maintenance.
+Day 1 established the static directory experience. Day 2 recreates that public flow with React, typed local data, and URL-driven filters. Later milestones add APIs and persistent data, introduce organizer workflows, and explore AI-assisted resource maintenance.

@@ -3,10 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Find fictional local community support services in Boston."
-    />
+    <meta name="description" content="Find fictional local community support services in Boston." />
     <title>Harbor Help Directory</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,80 +14,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="Harbor Help Directory home">
-        <span class="brand-mark" aria-hidden="true">H</span>
-        <span>Harbor Help</span>
-      </a>
-      <p class="header-note">Community resource navigator</p>
-    </header>
-
-    <main id="top">
-      <section class="intro" aria-labelledby="page-title">
-        <div>
-          <p class="eyebrow">Boston's fictional support directory</p>
-          <h1 id="page-title">A clearer path to <em>local support.</em></h1>
-          <p class="intro-copy">
-            Browse services for essentials, care, and next steps. Every listing is
-            written for people looking for practical help today.
-          </p>
-        </div>
-        <p class="intro-count"><span id="resource-total">12</span> services listed</p>
-      </section>
-
-      <section class="search-panel" aria-label="Search resources">
-        <div class="search-field">
-          <label for="keyword">What do you need?</label>
-          <input
-            id="keyword"
-            name="keyword"
-            type="search"
-            placeholder="Try food, housing, jobs..."
-            autocomplete="off"
-          />
-        </div>
-        <div class="location-field">
-          <label for="location">Location</label>
-          <input
-            id="location"
-            name="location"
-            type="search"
-            placeholder="Neighborhood or city"
-            autocomplete="off"
-          />
-        </div>
-        <button id="clear-filters" class="clear-button" type="button">Clear</button>
-      </section>
-
-      <section class="directory" aria-labelledby="directory-title">
-        <div class="directory-heading">
-          <div>
-            <p class="eyebrow">Explore services</p>
-            <h2 id="directory-title">Find what fits</h2>
-          </div>
-          <p id="result-summary" class="result-summary" aria-live="polite">Showing all 12 services</p>
-        </div>
-
-        <div id="category-filters" class="filter-row" aria-label="Resource categories"></div>
-
-        <div class="directory-layout">
-          <div id="resource-list" class="resource-list" aria-live="polite"></div>
-          <aside id="detail-panel" class="detail-panel" aria-live="polite">
-            <div class="detail-placeholder">
-              <span class="placeholder-symbol" aria-hidden="true">+</span>
-              <h3>Choose a service</h3>
-              <p>Open a listing to see contact details, hours, and eligibility.</p>
-            </div>
-          </aside>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <span>Harbor Help Directory</span>
-      <span>Day 1 prototype with fictional services</span>
-    </footer>
-
-    <script src="app.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
