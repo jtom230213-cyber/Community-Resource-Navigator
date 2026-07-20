@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useSearchParams } from "react-router-dom";
+import { FilterPanel } from "./components/FilterPanel";
+import { ResourceCard } from "./components/ResourceCard";
+import { ResourceDetail } from "./components/ResourceDetail";
+import { SearchBar } from "./components/SearchBar";
 import resourceData from "./data/resources.json";
 import type { Resource, ResourceCategory } from "./types";
 import "./styles.css";
@@ -76,17 +80,7 @@ function Directory() {
           <p className="intro-count"><span>{resources.length}</span> services listed</p>
         </section>
 
-        <section className="search-panel" aria-label="Search resources">
-          <div className="search-field">
-            <label htmlFor="keyword">What do you need?</label>
-            <input id="keyword" name="keyword" type="search" placeholder="Try food, housing, jobs..." autoComplete="off" value={keyword} onChange={(event) => setKeyword(event.target.value)} />
-          </div>
-          <div className="location-field">
-            <label htmlFor="city">Location</label>
-            <input id="city" name="city" type="search" placeholder="Neighborhood or city" autoComplete="off" value={city} onChange={(event) => updateFilters(selectedCategory, event.target.value)} />
-          </div>
-          <button className="clear-button" type="button" onClick={() => { setKeyword(""); updateFilters(); }}>Clear</button>
-        </section>
+        <SearchBar city={city} keyword={keyword} onCityChange={(nextCity) => updateFilters(selectedCategory, nextCity)} onClear={() => { setKeyword(""); updateFilters(); }} onKeywordChange={setKeyword} />
 
         <section className="directory" aria-labelledby="directory-title">
           <div className="directory-heading">
@@ -94,35 +88,21 @@ function Directory() {
             <p className="result-summary" aria-live="polite">{filteredResources.length === resources.length ? `Showing all ${countLabel}` : `Showing ${countLabel}`}</p>
           </div>
 
-          <div className="filter-row" aria-label="Resource categories">
-            <button className="filter-button" type="button" aria-pressed={!selectedCategory} onClick={() => updateFilters(undefined, city)}>All</button>
-            {categories.map((category) => <button className="filter-button" type="button" key={category} aria-pressed={selectedCategory === category} onClick={() => updateFilters(category, city)}>{category}</button>)}
-          </div>
+          <FilterPanel categories={categories} selectedCategory={selectedCategory} onSelectCategory={(category) => updateFilters(category, city)} />
 
           <div className="directory-layout">
-            <div className="resource-list" aria-live="polite">
-              {status === "loading" && <div className="state-panel"><h3>Loading services</h3><p>Preparing the local directory.</p></div>}
-              {status === "error" && <div className="state-panel state-panel-error"><h3>We could not load services</h3><p>Please try again.</p><button className="retry-button" type="button" onClick={() => setStatus("loading")}>Retry</button></div>}
-              {status === "ready" && filteredResources.length === 0 && <div className="empty-state"><h3>No services found</h3><p>Try another category, need, or location.</p></div>}
-              {status === "ready" && filteredResources.map((resource) => <button className={`resource-card ${resource.id === selectedId ? "is-selected" : ""}`} type="button" key={resource.id} onClick={() => setSelectedId(resource.id)} aria-label={`View details for ${resource.name}`}>
-                <span className="category-dot" style={{ background: categoryColors[resource.category] }} aria-hidden="true" />
-                <span><span className="card-category">{resource.category}</span><span className="card-title">{resource.name}</span><span className="card-city">{resource.city}</span></span>
-                <span className="card-arrow" aria-hidden="true">&rarr;</span>
-              </button>)}
-            </div>
+            <ul className="resource-list" aria-live="polite" aria-label="Matching services">
+              {status === "loading" && <li className="state-panel"><h3>Loading services</h3><p>Preparing the local directory.</p></li>}
+              {status === "error" && <li className="state-panel state-panel-error"><h3>We could not load services</h3><p>Please try again.</p><button className="retry-button" type="button" onClick={() => setStatus("loading")}>Retry</button></li>}
+              {status === "ready" && filteredResources.length === 0 && <li className="empty-state"><h3>No services found</h3><p>Try another category, need, or location.</p></li>}
+              {status === "ready" && filteredResources.map((resource) => <ResourceCard accentColor={categoryColors[resource.category]} isSelected={resource.id === selectedId} key={resource.id} resource={resource} onSelect={setSelectedId} />)}
+            </ul>
 
-            <aside className="detail-panel" aria-live="polite">
-              {!selectedResource && <div className="detail-placeholder"><span className="placeholder-symbol" aria-hidden="true">+</span><h3>Choose a service</h3><p>Open a listing to see contact details, hours, and eligibility.</p></div>}
-              {selectedResource && <article className="detail-content">
-                <div className="detail-topline"><div><p className="detail-category">{selectedResource.category}</p><h3>{selectedResource.name}</h3></div><button className="detail-close" type="button" aria-label="Close resource details" onClick={() => setSelectedId(null)}>&times;</button></div>
-                <p className="detail-address">{selectedResource.address}</p>
-                <dl className="detail-meta"><div><dt>Phone</dt><dd><a href={`tel:${selectedResource.phone.replace(/[^\d+]/g, "")}`}>{selectedResource.phone}</a></dd></div><div><dt>Website</dt><dd><a href={selectedResource.website} target="_blank" rel="noreferrer">Visit service website</a></dd></div><div><dt>Eligibility</dt><dd>{selectedResource.eligibility}</dd></div><div><dt>Hours</dt><dd>{selectedResource.hours}</dd></div></dl>
-              </article>}
-            </aside>
+            <aside className="detail-panel" aria-live="polite" aria-label="Resource details"><ResourceDetail resource={selectedResource} onClose={() => setSelectedId(null)} /></aside>
           </div>
         </section>
       </main>
-      <footer><span>Harbor Help Directory</span><span>Day 2 React prototype with fictional services</span></footer>
+      <footer><span>Harbor Help Directory</span><span>Day 3 component and accessibility pass with fictional services</span></footer>
     </>
   );
 }

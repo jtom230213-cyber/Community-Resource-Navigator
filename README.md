@@ -2,7 +2,7 @@
 
 > A calm, accessible starting point for finding local support.
 
-Harbor Help Directory is the Day 2 React rebuild in a 30-day Community Resource Navigator roadmap. It is a responsive, client-side directory that helps people quickly browse fictional local services for food, housing, health, legal aid, jobs, and education.
+Harbor Help Directory is the Day 3 React component and accessibility pass in a 30-day Community Resource Navigator roadmap. It is a responsive, client-side directory that helps people quickly browse fictional local services for food, housing, health, legal aid, jobs, and education.
 
 The project focuses on the essential public-facing experience: make support information easier to scan, filter, and act on when someone needs practical next steps.
 
@@ -29,7 +29,8 @@ Support information is often scattered across outdated pages and difficult to sc
 - Focused resource-detail view with address, phone, website, eligibility, and hours.
 - Loading, empty, and error-style states for the directory surface.
 - Responsive desktop and mobile layouts.
-- Visible keyboard focus states and labelled form controls.
+- Reusable, typed search, filter, resource-card, and resource-detail components.
+- Visible keyboard focus states, labelled controls, semantic result lists, and live result updates.
 
 ## Built with
 
@@ -91,6 +92,24 @@ The accepted categories are `food`, `housing`, `health`, `legal-aid`, `jobs`, an
 
 All data in this prototype is fictional. The seed records live in [src/data/resources.json](src/data/resources.json).
 
+## Component inventory
+
+| Component | Responsibility |
+| --- | --- |
+| `SearchBar` | Collects keyword and location input, and clears active search terms. |
+| `FilterPanel` | Presents category filters with an announced selected state. |
+| `ResourceCard` | Displays one matching resource and selects its detail view. |
+| `ResourceDetail` | Presents the selected service's full contact and eligibility information. |
+
+## Accessibility checklist
+
+- [x] Every search field has a visible, programmatic label.
+- [x] Interactive controls have high-visibility keyboard focus states.
+- [x] Category filters expose their selected state with `aria-pressed`.
+- [x] Search-result counts and detail changes use polite live regions.
+- [x] Search results use semantic list markup and the selected result is identified with `aria-current`.
+- [x] Color is not the only category indicator; resource cards include text category labels.
+
 ## Roadmap context
 
-Day 1 established the static directory experience. Day 2 recreates that public flow with React, typed local data, and URL-driven filters. Later milestones add APIs and persistent data, introduce organizer workflows, and explore AI-assisted resource maintenance.
+Day 1 established the static directory experience. Day 2 recreated that public flow with React, typed local data, and URL-driven filters. Day 3 extracts the core components and completes an accessibility pass. Later milestones add APIs and persistent data, introduce organizer workflows, and explore AI-assisted resource maintenance.
