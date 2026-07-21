@@ -2,7 +2,7 @@
 
 > A calm, accessible starting point for finding local support.
 
-Harbor Help Directory is the Day 3 React component and accessibility pass in a 30-day Community Resource Navigator roadmap. It is a responsive, client-side directory that helps people quickly browse fictional local services for food, housing, health, legal aid, jobs, and education.
+Harbor Help Directory is the Day 4 Express REST API addition to a 30-day Community Resource Navigator roadmap. It includes the existing responsive React directory and a typed, read-only API for its fictional local-service listings.
 
 The project focuses on the essential public-facing experience: make support information easier to scan, filter, and act on when someone needs practical next steps.
 
@@ -31,6 +31,7 @@ Support information is often scattered across outdated pages and difficult to sc
 - Responsive desktop and mobile layouts.
 - Reusable, typed search, filter, resource-card, and resource-detail components.
 - Visible keyboard focus states, labelled controls, semantic result lists, and live result updates.
+- Express REST API with typed Zod validation for resource searches.
 
 ## Built with
 
@@ -38,6 +39,8 @@ Support information is often scattered across outdated pages and difficult to sc
 - TypeScript
 - Vite
 - React Router
+- Express
+- Zod
 - Modern CSS
 
 ## Run locally
@@ -51,6 +54,47 @@ Open the local URL printed by Vite. Create a production bundle with:
 
 ```bash
 npm run build
+```
+
+## Run the API
+
+The Day 4 API reads the same fictional JSON seed data used by the React app. Install dependencies once, then start the local server:
+
+```bash
+npm install
+npm run api
+```
+
+The API listens on `http://localhost:3001` by default. Set `PORT` to use a different port.
+
+## API endpoints
+
+### `GET /resources`
+
+Returns all resources, or filters them using validated optional query parameters. `category` accepts the URL-safe values `food`, `housing`, `health`, `legal-aid`, `jobs`, and `education`. `city` matches a listed city, while `keyword` searches the resource name, category, address, city, and eligibility text.
+
+```bash
+curl http://localhost:3001/resources
+curl "http://localhost:3001/resources?category=food"
+curl "http://localhost:3001/resources?city=Boston&keyword=housing"
+```
+
+Invalid query parameters return `400`, including unsupported categories and blank values.
+
+### `GET /resources/:id`
+
+Returns one resource by its positive numeric ID, or `404` when that resource is not present.
+
+```bash
+curl http://localhost:3001/resources/3
+```
+
+### `GET /categories`
+
+Returns the supported display category names.
+
+```bash
+curl http://localhost:3001/categories
 ```
 
 ## URL filters
@@ -73,7 +117,11 @@ The accepted categories are `food`, `housing`, `health`, `legal-aid`, `jobs`, an
 |  |- main.tsx                # React directory experience
 |  |- styles.css              # Responsive visual design
 |  `- types.ts                # Resource contract
+|- server/
+|  |- app.ts                  # Express routes and Zod validation
+|  `- index.ts                # Local API server entry point
 |- package.json               # Vite development commands
+|- tsconfig.api.json          # API TypeScript validation
 `- assets/screenshots/        # README previews
 ```
 
@@ -112,4 +160,4 @@ All data in this prototype is fictional. The seed records live in [src/data/reso
 
 ## Roadmap context
 
-Day 1 established the static directory experience. Day 2 recreated that public flow with React, typed local data, and URL-driven filters. Day 3 extracts the core components and completes an accessibility pass. Later milestones add APIs and persistent data, introduce organizer workflows, and explore AI-assisted resource maintenance.
+Day 1 established the static directory experience. Day 2 recreated that public flow with React, typed local data, and URL-driven filters. Day 3 extracted the core components and completed an accessibility pass. Day 4 adds a validated Express API over the same JSON-backed data. Later milestones connect the frontend to the API, add persistence, introduce organizer workflows, and explore AI-assisted resource maintenance.
