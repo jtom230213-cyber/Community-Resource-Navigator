@@ -1,3 +1,4 @@
+import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import { z } from "zod";
 import resources from "../src/data/resources.json";
@@ -41,6 +42,8 @@ function matchesKeyword(resource: Resource, keyword: string) {
 }
 
 export const app = express();
+
+app.use(cors());
 
 app.get("/resources", (request, response, next) => {
   const parsedQuery = resourceQuerySchema.safeParse(request.query);

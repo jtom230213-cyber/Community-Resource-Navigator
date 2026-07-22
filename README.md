@@ -2,7 +2,7 @@
 
 > A calm, accessible starting point for finding local support.
 
-Harbor Help Directory is the Day 4 Express REST API addition to a 30-day Community Resource Navigator roadmap. It includes the existing responsive React directory and a typed, read-only API for its fictional local-service listings.
+Harbor Help Directory is the Day 5 React and Express directory in a 30-day Community Resource Navigator roadmap. The responsive React client searches a typed, read-only API for its fictional local-service listings.
 
 The project focuses on the essential public-facing experience: make support information easier to scan, filter, and act on when someone needs practical next steps.
 
@@ -32,6 +32,7 @@ Support information is often scattered across outdated pages and difficult to sc
 - Reusable, typed search, filter, resource-card, and resource-detail components.
 - Visible keyboard focus states, labelled controls, semantic result lists, and live result updates.
 - Express REST API with typed Zod validation for resource searches.
+- TanStack Query-powered API search with loading, retry, and no-results states.
 
 ## Built with
 
@@ -41,31 +42,46 @@ Support information is often scattered across outdated pages and difficult to sc
 - React Router
 - Express
 - Zod
+- TanStack Query
+- CORS
 - Modern CSS
 
 ## Run locally
 
+Install dependencies once:
+
 ```bash
 npm install
+```
+
+In one terminal, start the Express API:
+
+```bash
+npm run api
+```
+
+In a second terminal, start the React client:
+
+```bash
 npm run dev
 ```
 
-Open the local URL printed by Vite. Create a production bundle with:
+Open the local URL printed by Vite. The client calls `http://localhost:3001/resources` by default. Set `VITE_API_URL` before starting Vite to point at another API base URL. Create a production bundle with:
 
 ```bash
 npm run build
 ```
 
-## Run the API
+## Architecture
 
-The Day 4 API reads the same fictional JSON seed data used by the React app. Install dependencies once, then start the local server:
-
-```bash
-npm install
-npm run api
+```mermaid
+flowchart LR
+	Browser[React + TanStack Query] -->|GET /resources?category&city&keyword| API[Express API]
+	API -->|Validated JSON response| Browser
+	API --> Seed[src/data/resources.json]
 ```
 
-The API listens on `http://localhost:3001` by default. Set `PORT` to use a different port.
+The Express API validates search parameters with Zod, enables CORS for the local browser client, and reads the fictional JSON seed data. It listens on `http://localhost:3001` by default; set `PORT` to use a different port.
 
 ## API endpoints
 
@@ -113,8 +129,8 @@ The accepted categories are `food`, `housing`, `health`, `legal-aid`, `jobs`, an
 .
 |- index.html                 # Vite entry point
 |- src/
-|  |- data/resources.json     # Typed local seed data
-|  |- main.tsx                # React directory experience
+|  |- data/resources.json     # API seed data
+|  |- main.tsx                # React directory experience and API queries
 |  |- styles.css              # Responsive visual design
 |  `- types.ts                # Resource contract
 |- server/
@@ -160,4 +176,4 @@ All data in this prototype is fictional. The seed records live in [src/data/reso
 
 ## Roadmap context
 
-Day 1 established the static directory experience. Day 2 recreated that public flow with React, typed local data, and URL-driven filters. Day 3 extracted the core components and completed an accessibility pass. Day 4 adds a validated Express API over the same JSON-backed data. Later milestones connect the frontend to the API, add persistence, introduce organizer workflows, and explore AI-assisted resource maintenance.
+Day 1 established the static directory experience. Day 2 recreated that public flow with React, typed local data, and URL-driven filters. Day 3 extracted the core components and completed an accessibility pass. Day 4 added a validated Express API over the same JSON-backed data. Day 5 connects the React client through TanStack Query and CORS, with API-backed loading, retry, and no-results states. Later milestones add persistence, organizer workflows, and AI-assisted resource maintenance.
